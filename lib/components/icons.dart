@@ -15,13 +15,13 @@ class IconsUI extends StatelessWidget {
         Icon(
           Icons.navigation,
           color: AppColors.white,
-          size: 60,
+          size: 50,
         ),
         SizedBox(width: 280),
         Icon(
           Icons.location_city,
           color: AppColors.white,
-          size: 60,
+          size: 50,
         ),
       ],
     );
