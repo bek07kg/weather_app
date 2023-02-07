@@ -70,10 +70,12 @@ class _HomePageState extends State<HomePage> {
                             snapshot.data!.main,
                             style: AppTextStyles.body1,
                           ),
+                          SizedBox(height: 30),
                           Text(
                             snapshot.data!.description,
                             style: AppTextStyles.body2,
                           ),
+                          SizedBox(height: 30),
                           Text(
                             snapshot.data!.icon,
                             style: AppTextStyles.body2,
