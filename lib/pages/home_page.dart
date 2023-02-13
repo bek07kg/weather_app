@@ -90,9 +90,7 @@ class _HomePageState extends State<HomePage> {
             ),
             Text(
               "Bishkek",
-              style: TextStyle(
-                color: AppColors.white,
-              ),
+              style: AppTextStyles.city,
             ),
           ],
         ),

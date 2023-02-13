@@ -14,11 +14,11 @@ class AppTextStyles {
 
   static const TextStyle centertitle = TextStyle(
     color: AppColors.white,
-    fontSize: 60,
+    fontSize: 40,
   );
 
   static const TextStyle city = TextStyle(
     color: AppColors.white,
-    fontSize: 60,
+    fontSize: 50,
   );
 }
