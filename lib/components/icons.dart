@@ -5,25 +5,20 @@ import '../constants/app_colors.dart';
 class IconsUI extends StatelessWidget {
   const IconsUI({
     super.key,
+    required this.icon,
   });
+
+  final IconData icon;
 
   @override
   Widget build(BuildContext context) {
-    return const Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        Icon(
-          Icons.navigation,
-          color: AppColors.white,
-          size: 50,
-        ),
-        SizedBox(width: 280),
-        Icon(
-          Icons.location_city,
-          color: AppColors.white,
-          size: 50,
-        ),
-      ],
+    return IconButton(
+      onPressed: () {},
+      iconSize: 60,
+      color: AppColors.white,
+      icon: Icon(
+        icon,
+      ),
     );
   }
 }

@@ -57,42 +57,42 @@ class _HomePageState extends State<HomePage> {
         ),
         child: Column(
           children: [
-            IconsUI(),
-            Center(
-              child: FutureBuilder(
-                  future: fetchData(),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      return Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            snapshot.data!.main,
-                            style: AppTextStyles.body1,
-                          ),
-                          SizedBox(height: 30),
-                          Text(
-                            snapshot.data!.description,
-                            style: AppTextStyles.body2,
-                          ),
-                          SizedBox(height: 30),
-                          Text(
-                            snapshot.data!.icon,
-                            style: AppTextStyles.body2,
-                          ),
-                          SizedBox(height: 50),
-                          Text(
-                            snapshot.data!.name,
-                            style: AppTextStyles.city,
-                          ),
-                        ],
-                      );
-                    } else if (snapshot.hasError) {
-                      return Text(snapshot.error.toString());
-                    } else {
-                      return const CircularProgressIndicator();
-                    }
-                  }),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                IconsUI(
+                  icon: Icons.near_me,
+                ),
+                IconsUI(
+                  icon: Icons.location_city,
+                ),
+              ],
+            ),
+            Row(
+              children: [
+                SizedBox(width: 20),
+                Text(
+                  "8",
+                  style: AppTextStyles.temp,
+                ),
+                Image.network(Api.getIcon("11n", 4)),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Text(
+                  "You'all need and ".replaceAll(" ", "\n"),
+                  style: AppTextStyles.centertitle,
+                  textAlign: TextAlign.right,
+                ),
+              ],
+            ),
+            Text(
+              "Bishkek",
+              style: TextStyle(
+                color: AppColors.white,
+              ),
             ),
           ],
         ),
