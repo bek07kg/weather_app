@@ -16,7 +16,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  Future<Weather?> fetchData() async {
+  Future<Weather?>? fetchData() async {
     final dio = Dio();
     final responce = await dio.get(Api.api);
     print(responce);
@@ -45,56 +45,78 @@ class _HomePageState extends State<HomePage> {
           style: AppTextStyles.appBarStyle,
         ),
       ),
-      body: Container(
-        width: double.infinity,
-        height: double.infinity,
-        constraints: const BoxConstraints.expand(),
-        decoration: const BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage("assets/images/weather.jpg"),
-            fit: BoxFit.cover,
-          ),
-        ),
-        child: Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                IconsUI(
-                  icon: Icons.near_me,
-                ),
-                IconsUI(
-                  icon: Icons.location_city,
-                ),
-              ],
-            ),
-            Row(
-              children: [
-                SizedBox(width: 20),
-                Text(
-                  "8",
-                  style: AppTextStyles.temp,
-                ),
-                Image.network(Api.getIcon("11n", 4)),
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Text(
-                  "You'all need and ".replaceAll(" ", "\n"),
-                  style: AppTextStyles.centertitle,
-                  textAlign: TextAlign.right,
-                ),
-              ],
-            ),
-            Text(
-              "Bishkek",
-              style: AppTextStyles.city,
-            ),
-          ],
-        ),
-      ),
+      body: FutureBuilder<Weather?>(
+          future: fetchData(),
+          builder: (context, sn) {
+            if (sn.connectionState == ConnectionState.waiting) {
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            } else if (sn.connectionState == ConnectionState.none) {
+              return Text("Internet connection is unstable! log in again.");
+            } else if (sn.connectionState == ConnectionState.done) {
+              if (sn.hasError) {
+                return Text("${sn.error}");
+              } else if (sn.hasData) {
+                final weather = sn.data!;
+
+                return Container(
+                  width: double.infinity,
+                  height: double.infinity,
+                  constraints: const BoxConstraints.expand(),
+                  decoration: const BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage("assets/images/weather.jpg"),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          IconsUI(
+                            icon: Icons.near_me,
+                          ),
+                          IconsUI(
+                            icon: Icons.location_city,
+                          ),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          SizedBox(width: 20),
+                          Text(
+                            "8",
+                            style: AppTextStyles.temp,
+                          ),
+                          Image.network(Api.getIcon("11n", 4)),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Text(
+                            "You'all need and ".replaceAll(" ", "\n"),
+                            style: AppTextStyles.centertitle,
+                            textAlign: TextAlign.right,
+                          ),
+                        ],
+                      ),
+                      Text(
+                        "Bishkek",
+                        style: AppTextStyles.city,
+                      ),
+                    ],
+                  ),
+                );
+              } else {
+                return Text("Unknown error!");
+              }
+            } else {
+              return Text("Unknown error!");
+            }
+          }),
     );
   }
 }
