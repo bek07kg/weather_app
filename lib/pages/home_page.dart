@@ -16,13 +16,15 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  Future<void> weatherLocation() {}
+
   Future<Weather?>? fetchData() async {
     final dio = Dio();
     final responce = await dio.get(Api.api);
     print(responce);
     if (responce.statusCode == 200) {
       final Weather weather = Weather(
-        main: responce.data['weather'][0]['main'],
+        temp: responce.data['main']['temp'],
         description: responce.data['weather'][0]['description'],
         icon: responce.data['weather'][0]['icon'],
         name: responce.data['name'],
@@ -49,7 +51,7 @@ class _HomePageState extends State<HomePage> {
           future: fetchData(),
           builder: (context, sn) {
             if (sn.connectionState == ConnectionState.waiting) {
-              return Center(
+              return const Center(
                 child: CircularProgressIndicator(),
               );
             } else if (sn.connectionState == ConnectionState.none) {
@@ -72,7 +74,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                   child: Column(
                     children: [
-                      Row(
+                      const Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           IconsUI(
@@ -87,34 +89,42 @@ class _HomePageState extends State<HomePage> {
                         children: [
                           SizedBox(width: 20),
                           Text(
-                            "8",
+                            "${(weather.temp - 273.15).truncate()}",
                             style: AppTextStyles.temp,
                           ),
-                          Image.network(Api.getIcon("11n", 4)),
+                          Image.network(Api.getIcon(weather.icon, 4)),
                         ],
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          Text(
-                            "You'all need and ".replaceAll(" ", "\n"),
-                            style: AppTextStyles.centertitle,
-                            textAlign: TextAlign.right,
+                          SizedBox(height: 20),
+                          Expanded(
+                            flex: 3,
+                            child: Text(
+                              weather.description.replaceAll(" ", "\n"),
+                              // "You'all need and ".replaceAll(" ", "\n"),
+                              style: AppTextStyles.centertitle,
+                              textAlign: TextAlign.right,
+                            ),
                           ),
                         ],
                       ),
-                      Text(
-                        "Bishkek",
-                        style: AppTextStyles.city,
+                      Expanded(
+                        flex: 1,
+                        child: Text(
+                          weather.name,
+                          style: AppTextStyles.city,
+                        ),
                       ),
                     ],
                   ),
                 );
               } else {
-                return Text("Unknown error!");
+                return const Text("Unknown error!");
               }
             } else {
-              return Text("Unknown error!");
+              return const Text("Unknown error!");
             }
           }),
     );
