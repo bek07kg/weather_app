@@ -1,5 +1,7 @@
+import 'dart:developer';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:tapshyrma09_flutter/constants/api.dart';
 import 'package:tapshyrma09_flutter/constants/app_colors.dart';
 import 'package:tapshyrma09_flutter/constants/app_text_styles.dart';
@@ -16,7 +18,19 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  Future<void> weatherLocation() {}
+  Future<void> weatherLocation() async {
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        await fetchData();
+      }
+    } else {
+      Position position = await Geolocator.getCurrentPosition();
+      print(position.latitude);
+      print(position.longitude);
+    }
+  }
 
   Future<Weather?>? fetchData() async {
     final dio = Dio();
@@ -74,13 +88,17 @@ class _HomePageState extends State<HomePage> {
                   ),
                   child: Column(
                     children: [
-                      const Row(
+                      Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           IconsUI(
+                            onPressed: () async {
+                              await weatherLocation();
+                            },
                             icon: Icons.near_me,
                           ),
                           IconsUI(
+                            onPressed: () {},
                             icon: Icons.location_city,
                           ),
                         ],
