@@ -10,6 +10,15 @@ import 'package:tapshyrma09_flutter/constants/app_texts.dart';
 import '../components/icons.dart';
 import '../model/weather.dart';
 
+const List cityes = <String>[
+  'bishkek',
+  'talas',
+  'naryn',
+  'batken',
+  'jalal-abad',
+  'kara-suu'
+];
+
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
 
@@ -18,133 +27,185 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  Weather? weather;
+
   Future<void> weatherLocation() async {
     LocationPermission permission = await Geolocator.checkPermission();
+
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        await fetchData();
+      if (permission == LocationPermission.always &&
+          permission == LocationPermission.whileInUse) {
+        Position position = await Geolocator.getCurrentPosition();
+
+        final dio = Dio();
+        final response = await dio
+            .get(Api.getLocator(position.latitude, position.longitude));
+
+        if (response.statusCode == 200) {
+          weather = Weather(
+              temp: response.data['current']['temp'],
+              description: response.data['current']['weather'][0]
+                  ['description'],
+              icon: response.data['current']['weather'][0]['icon'],
+              name: response.data['timezone']);
+          setState(() {});
+        }
       }
     } else {
       Position position = await Geolocator.getCurrentPosition();
-      print(position.latitude);
-      print(position.longitude);
+
+      final dio = Dio();
+      final responce =
+          await dio.get(Api.getLocator(position.latitude, position.longitude));
+
+      if (responce.statusCode == 200) {
+        final Weather weather = Weather(
+          temp: responce.data['current']['temp'],
+          description: responce.data['current']['weather'][0]['description'],
+          icon: responce.data['current']['weather'][0]['icon'],
+          name: responce.data['timezone'],
+        );
+        setState(() {});
+      }
     }
   }
 
-  Future<Weather?>? fetchData() async {
+  Future<void> weatherName([String? name]) async {
     final dio = Dio();
-    final responce = await dio.get(Api.api);
-    print(responce);
-    if (responce.statusCode == 200) {
-      final Weather weather = Weather(
-        temp: responce.data['main']['temp'],
-        description: responce.data['weather'][0]['description'],
-        icon: responce.data['weather'][0]['icon'],
-        name: responce.data['name'],
+    final response = await dio.get(Api.api(name ?? 'osh'));
+
+    if (response.statusCode == 200) {
+      weather = Weather(
+        temp: response.data['main']['temp'],
+        description: response.data['weather'][0]['description'],
+        icon: response.data['weather'][0]['icon'],
+        name: response.data['name'],
       );
-      return weather;
-    } else {
-      return null;
+      setState(() {});
     }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    weatherName();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: AppColors.white,
-        elevation: 0,
-        centerTitle: true,
-        title: const Text(
-          AppText.appBarTitle,
-          style: AppTextStyles.appBarStyle,
+        appBar: AppBar(
+          backgroundColor: AppColors.white,
+          elevation: 0,
+          centerTitle: true,
+          title: const Text(
+            AppText.appBarTitle,
+            style: AppTextStyles.appBarStyle,
+          ),
         ),
-      ),
-      body: FutureBuilder<Weather?>(
-          future: fetchData(),
-          builder: (context, sn) {
-            if (sn.connectionState == ConnectionState.waiting) {
-              return const Center(
+        body: weather == null
+            ? const Center(
                 child: CircularProgressIndicator(),
-              );
-            } else if (sn.connectionState == ConnectionState.none) {
-              return Text("Internet connection is unstable! log in again.");
-            } else if (sn.connectionState == ConnectionState.done) {
-              if (sn.hasError) {
-                return Text("${sn.error}");
-              } else if (sn.hasData) {
-                final weather = sn.data!;
-
-                return Container(
-                  width: double.infinity,
-                  height: double.infinity,
-                  constraints: const BoxConstraints.expand(),
-                  decoration: const BoxDecoration(
-                    image: DecorationImage(
-                      image: AssetImage("assets/images/weather.jpg"),
-                      fit: BoxFit.cover,
-                    ),
+              )
+            : Container(
+                width: double.infinity,
+                height: double.infinity,
+                constraints: const BoxConstraints.expand(),
+                decoration: const BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage("assets/images/weather.jpg"),
+                    fit: BoxFit.cover,
                   ),
-                  child: Column(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          IconsUI(
-                            onPressed: () async {
-                              await weatherLocation();
-                            },
-                            icon: Icons.near_me,
-                          ),
-                          IconsUI(
-                            onPressed: () {},
-                            icon: Icons.location_city,
-                          ),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          SizedBox(width: 20),
-                          Text(
-                            "${(weather.temp - 273.15).truncate()}",
-                            style: AppTextStyles.temp,
-                          ),
-                          Image.network(Api.getIcon(weather.icon, 4)),
-                        ],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          SizedBox(height: 20),
-                          Expanded(
-                            flex: 3,
+                ),
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        IconsUI(
+                          onPressed: () async {
+                            await weatherLocation();
+                          },
+                          icon: Icons.near_me,
+                        ),
+                        IconsUI(
+                          onPressed: () {
+                            showBottom();
+                          },
+                          icon: Icons.location_city,
+                        ),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        SizedBox(width: 20),
+                        Text(
+                          "${(weather!.temp - 273.15).truncate()}",
+                          style: AppTextStyles.temp,
+                        ),
+                        Image.network(Api.getIcon(weather!.icon, 4)),
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        SizedBox(height: 10),
+                        Expanded(
+                          flex: 3,
+                          child: FittedBox(
                             child: Text(
-                              weather.description.replaceAll(" ", "\n"),
+                              weather!.description.replaceAll(" ", "\n"),
                               // "You'all need and ".replaceAll(" ", "\n"),
                               style: AppTextStyles.centertitle,
                               textAlign: TextAlign.right,
                             ),
                           ),
-                        ],
-                      ),
-                      Expanded(
-                        flex: 1,
+                        ),
+                      ],
+                    ),
+                    Expanded(
+                      flex: 1,
+                      child: FittedBox(
                         child: Text(
-                          weather.name,
+                          weather!.name,
                           style: AppTextStyles.city,
                         ),
                       ),
-                    ],
-                  ),
-                );
-              } else {
-                return const Text("Unknown error!");
-              }
-            } else {
-              return const Text("Unknown error!");
-            }
-          }),
+                    ),
+                  ],
+                ),
+              ));
+  }
+
+  void showBottom() {
+    showModalBottomSheet<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return Container(
+          height: MediaQuery.of(context).size.height * 0.5,
+          color: Color.fromARGB(255, 140, 174, 118),
+          padding: EdgeInsets.all(10),
+          child: ListView.builder(
+            itemCount: cityes.length,
+            itemBuilder: (BuildContext context, int index) {
+              final city = cityes[index];
+              return Card(
+                child: ListTile(
+                  onTap: () async {
+                    setState(() {
+                      weather = null;
+                    });
+                    weatherName(city);
+                    Navigator.pop(context);
+                  },
+                  title: Text(city),
+                ),
+              );
+            },
+          ),
+        );
+      },
     );
   }
 }
