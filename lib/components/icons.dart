@@ -15,7 +15,7 @@ class IconsUI extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return IconButton(
-      onPressed: () {},
+      onPressed: onPressed,
       iconSize: 60,
       color: AppColors.white,
       icon: Icon(

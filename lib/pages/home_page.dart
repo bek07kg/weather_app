@@ -20,7 +20,7 @@ const List cityes = <String>[
 ];
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+  HomePage({Key? key}) : super(key: key);
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -131,7 +131,10 @@ class _HomePageState extends State<HomePage> {
                         ),
                         IconsUI(
                           onPressed: () {
-                            showBottom();
+                            print("hhhhh");
+                            setState(() {
+                              showBottom();
+                            });
                           },
                           icon: Icons.location_city,
                         ),
@@ -153,24 +156,20 @@ class _HomePageState extends State<HomePage> {
                         SizedBox(height: 10),
                         Expanded(
                           flex: 3,
-                          child: FittedBox(
-                            child: Text(
-                              weather!.description.replaceAll(" ", "\n"),
-                              // "You'all need and ".replaceAll(" ", "\n"),
-                              style: AppTextStyles.centertitle,
-                              textAlign: TextAlign.right,
-                            ),
+                          child: Text(
+                            weather!.description.replaceAll(" ", "\n"),
+                            // "You'all need and ".replaceAll(" ", "\n"),
+                            style: AppTextStyles.centertitle,
+                            textAlign: TextAlign.right,
                           ),
                         ),
                       ],
                     ),
                     Expanded(
                       flex: 1,
-                      child: FittedBox(
-                        child: Text(
-                          weather!.name,
-                          style: AppTextStyles.city,
-                        ),
+                      child: Text(
+                        weather!.name,
+                        style: AppTextStyles.city,
                       ),
                     ),
                   ],
@@ -184,7 +183,7 @@ class _HomePageState extends State<HomePage> {
       builder: (BuildContext context) {
         return Container(
           height: MediaQuery.of(context).size.height * 0.5,
-          color: Color.fromARGB(255, 140, 174, 118),
+          color: Colors.yellow,
           padding: EdgeInsets.all(10),
           child: ListView.builder(
             itemCount: cityes.length,

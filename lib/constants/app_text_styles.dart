@@ -7,18 +7,18 @@ class AppTextStyles {
     color: AppColors.black,
     fontWeight: FontWeight.bold,
   );
-  static const TextStyle temp = TextStyle(
+  static TextStyle temp = TextStyle(
     color: AppColors.white,
     fontSize: 96,
   );
 
-  static const TextStyle centertitle = TextStyle(
+  static TextStyle centertitle = TextStyle(
     color: AppColors.white,
-    fontSize: 20,
+    fontSize: 80,
   );
 
-  static const TextStyle city = TextStyle(
+  static TextStyle city = TextStyle(
     color: AppColors.white,
-    fontSize: 20,
+    fontSize: 80,
   );
 }
