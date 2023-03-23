@@ -1,3 +1,3 @@
 class AppText {
-  static const String appBarTitle = "Тапшырма - 09";
+  static const String appBarTitle = "Weather app";
 }
