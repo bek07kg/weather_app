@@ -12,6 +12,7 @@ import '../model/weather.dart';
 
 const List cityes = <String>[
   'bishkek',
+  'osh',
   'talas',
   'naryn',
   'batken',
@@ -95,86 +96,87 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          backgroundColor: AppColors.white,
-          elevation: 0,
-          centerTitle: true,
-          title: const Text(
-            AppText.appBarTitle,
-            style: AppTextStyles.appBarStyle,
-          ),
+      appBar: AppBar(
+        backgroundColor: AppColors.white,
+        elevation: 0,
+        centerTitle: true,
+        title: const Text(
+          AppText.appBarTitle,
+          style: AppTextStyles.appBarStyle,
         ),
-        body: weather == null
-            ? const Center(
-                child: CircularProgressIndicator(),
-              )
-            : Container(
-                width: double.infinity,
-                height: double.infinity,
-                constraints: const BoxConstraints.expand(),
-                decoration: const BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage("assets/images/weather.jpg"),
-                    fit: BoxFit.cover,
-                  ),
+      ),
+      body: weather == null
+          ? const Center(
+              child: CircularProgressIndicator(),
+            )
+          : Container(
+              width: double.infinity,
+              height: double.infinity,
+              constraints: const BoxConstraints.expand(),
+              decoration: const BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage("assets/images/weather.jpg"),
+                  fit: BoxFit.cover,
                 ),
-                child: Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        IconsUI(
-                          onPressed: () async {
-                            await weatherLocation();
-                          },
-                          icon: Icons.near_me,
-                        ),
-                        IconsUI(
-                          onPressed: () {
-                            print("hhhhh");
-                            setState(() {
-                              showBottom();
-                            });
-                          },
-                          icon: Icons.location_city,
-                        ),
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        SizedBox(width: 20),
-                        Text(
-                          "${(weather!.temp - 273.15).truncate()}",
-                          style: AppTextStyles.temp,
-                        ),
-                        Image.network(Api.getIcon(weather!.icon, 4)),
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        SizedBox(height: 10),
-                        Expanded(
-                          flex: 3,
-                          child: Text(
-                            weather!.description.replaceAll(" ", "\n"),
-                            // "You'all need and ".replaceAll(" ", "\n"),
-                            style: AppTextStyles.centertitle,
-                            textAlign: TextAlign.right,
-                          ),
-                        ),
-                      ],
-                    ),
-                    Expanded(
-                      flex: 1,
-                      child: Text(
-                        weather!.name,
-                        style: AppTextStyles.city,
+              ),
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      IconsUI(
+                        onPressed: () async {
+                          await weatherLocation();
+                        },
+                        icon: Icons.near_me,
                       ),
+                      IconsUI(
+                        onPressed: () {
+                          print("hhhhh");
+                          setState(() {
+                            showBottom();
+                          });
+                        },
+                        icon: Icons.location_city,
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      SizedBox(width: 20),
+                      Text(
+                        "${(weather!.temp - 273.15).truncate()}",
+                        style: AppTextStyles.temp,
+                      ),
+                      Image.network(Api.getIcon(weather!.icon, 4)),
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      SizedBox(height: 10),
+                      Expanded(
+                        flex: 3,
+                        child: Text(
+                          weather!.description.replaceAll(" ", "\n"),
+                          // "You'all need and ".replaceAll(" ", "\n"),
+                          style: AppTextStyles.centertitle,
+                          textAlign: TextAlign.right,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Expanded(
+                    flex: 1,
+                    child: Text(
+                      weather!.name,
+                      style: AppTextStyles.city,
                     ),
-                  ],
-                ),
-              ));
+                  ),
+                ],
+              ),
+            ),
+    );
   }
 
   void showBottom() {
